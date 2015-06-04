@@ -293,8 +293,10 @@ while t<=T_end:
 
 	print 'STARTING THE COMPUTATION OF DEFORMATION'
 	assign(B_1,B) # new B will be computed
-	for i in range(Ns-1):
+	i = 0	
+	while (vS[i] <= t and i < Ns-1)
 		solve_deformation(i,B_1,B,u,n,dt,tau_k)
+		i += 1
 	print 'ENDING THE COMPUTATION OF DEFORMATION'
 
 	u_1.assign(u)
