@@ -110,7 +110,7 @@ B_old = Function(W)
 B_old = interpolate(Expression((("1", "0"), 
                              ("0", "1"))), W)
 for K in range(Ns):
-	assign([B_1.sub(K+i*Ns) for i in range(dim*dim)], B_old)
+	assign([B.sub(K+i*Ns) for i in range(dim*dim)], B_old)
 
 # Variational formulation of motion
 ###################################
@@ -130,7 +130,7 @@ def der_F(D):
 def lin_F(D,u_1):
 	D_1 = 0.5*(grad(u_1) + grad(u_1).T)
 	M = F(D_1) + der_F(D_1)*(D-D_1)
-	return M
+	return D
 
 def a(u,v):
 	M = inner(lin_F(D,u_1),grad(v))*dx - inner(avg(lin_F(D,u_1))*n('+'),jump(v))*dS 
@@ -279,19 +279,20 @@ u_nPrev.assign(interpolate(u0,V))
 for bc in bcs:
 	bc.apply(w.vector())  # apply boundary condition
 
+
 while t<=T_end:
 	noslip.t 	= t
 	u_IN.t		= t
 	f_rhs.t		= t
 	print 'time step: ', t
 
-	assign(B,B_1)
 	print 'STARTING THE COMPUTATION OF MOTION'
 	solve_motion(True,T,w,bcs,bcs_hom,Jac)
 	(u,p) = w.split(True)
 	print 'ENDING THE COMPUTATION OF MOTION'
 
 	print 'STARTING THE COMPUTATION OF DEFORMATION'
+	assign(B_1,B) # new B will be computed
 	for i in range(Ns-1):
 		solve_deformation(i,B_1,B,u,n,dt,tau_k)
 	print 'ENDING THE COMPUTATION OF DEFORMATION'
